@@ -34,14 +34,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin {
-    // TwinkNet start - Inventory drag to move
     @Shadow
     @Nullable
     protected abstract Slot getSlotAt(double mouseX, double mouseY);
 
     @Shadow
     protected abstract void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType);
-    // TwinkNet end
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void onMouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
@@ -61,7 +59,6 @@ public abstract class HandledScreenMixin {
         }
     }
 
-    // TwinkNet start - Inventory drag to move
     @Inject(method = "mouseDragged", at = @At("TAIL"))
     private void onMouseDragged(Click click, double offsetX, double offsetY, CallbackInfoReturnable<Boolean> cir) {
         boolean flag = InventoryTweaks.INSTANCE.isEnabled() && InventoryTweaks.INSTANCE.doDragToMove();
@@ -73,5 +70,4 @@ public abstract class HandledScreenMixin {
             onMouseClick(slot, slot.id, click.button(), SlotActionType.QUICK_MOVE);
         }
     }
-    // TwinkNet end
 }
