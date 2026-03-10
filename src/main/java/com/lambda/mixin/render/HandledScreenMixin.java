@@ -17,16 +17,32 @@
 
 package com.lambda.mixin.render;
 
+import com.lambda.module.modules.player.InventoryTweaks;
 import com.lambda.module.modules.render.ContainerPreview;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
+import org.jspecify.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(HandledScreen.class)
-public class HandledScreenMixin {
+public abstract class HandledScreenMixin {
+    // TwinkNet start - Inventory drag to move
+    @Shadow
+    @Nullable
+    protected abstract Slot getSlotAt(double mouseX, double mouseY);
+
+    @Shadow
+    protected abstract void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType);
+    // TwinkNet end
+
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void onMouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
         if (ContainerPreview.INSTANCE.isEnabled() && ContainerPreview.isLocked()) {
@@ -44,4 +60,18 @@ public class HandledScreenMixin {
             }
         }
     }
+
+    // TwinkNet start - Inventory drag to move
+    @Inject(method = "mouseDragged", at = @At("TAIL"))
+    private void onMouseDragged(Click click, double offsetX, double offsetY, CallbackInfoReturnable<Boolean> cir) {
+        boolean flag = InventoryTweaks.INSTANCE.isEnabled() && InventoryTweaks.INSTANCE.doDragToMove();
+        if (click.button() != GLFW.GLFW_MOUSE_BUTTON_LEFT || !flag) {
+            return;
+        }
+        Slot slot = getSlotAt(click.x(), click.y());
+        if (slot != null && slot.hasStack() && MinecraftClient.getInstance().isShiftPressed()) {
+            onMouseClick(slot, slot.id, click.button(), SlotActionType.QUICK_MOVE);
+        }
+    }
+    // TwinkNet end
 }
