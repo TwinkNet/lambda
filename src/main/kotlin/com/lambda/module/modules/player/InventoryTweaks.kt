@@ -41,6 +41,7 @@ object InventoryTweaks : Module(
 ) {
     private val instantShulker by setting("Instant Shulker", true, description = "Right-click shulker boxes in your inventory to instantly place them and open them.")
     private val instantEChest by setting("Instant Ender-Chest", true, description = "Right-click ender chests in your inventory to instantly place them and open them.")
+    private val clickDrag by setting("ShiftClick and Drag to Move", true, description = "Hold shift, click, and drag to quickly move items across inventories.") // TwinkNet - Inventory Drag to Move
     private var placedPos: BlockPos? = null
     private var placeAndOpen: Task<*>? = null
     private var lastBreak: Task<*>? = null
@@ -81,4 +82,10 @@ object InventoryTweaks : Module(
             lastBreak?.cancel()
         }
     }
+
+    // TwinkNet start - Inventory Drag to Move
+    fun doDragToMove(): Boolean {
+        return clickDrag
+    }
+    // TwinkNet end
 }
