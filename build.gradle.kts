@@ -18,6 +18,7 @@
 import java.util.*
 
 val modId: String by project
+val forkName: String by project
 val mavenGroup: String by project
 val modVersion: String by project
 val minecraftVersion: String by project
@@ -54,7 +55,7 @@ plugins {
 group = mavenGroup
 version = modVersion
 
-base.archivesName = modId
+base.archivesName = "$modId-$forkName"
 
 // We need to force it using lwjgl 3.3.3 because of 3.3.4 poor support for Wayland protocol
 configurations.all {
