@@ -15,24 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.lambda.config.groups
+package com.lambda.util
 
-import java.awt.Color
+class TickTimer {
+	private var ticks = 0
 
-interface EntityColorsConfig {
-	val useNaturalColors: Boolean
-	val playerColor: Color
-	val playerDistanceGradient: Boolean
-	val playerDistanceColorFar: Color
-	val playerDistanceColorClose: Color
-	val separateFriendColor: Boolean
-	val friendColor: Color
-	val mobColor: Color
-	val passiveColor: Color
-	val vehicleColor: Color
-	val projectileColor: Color
-	val bossColor: Color
-	val decorationColor: Color
-	val blockColor: Color
-	val miscColor: Color
+	fun tick() {
+		ticks++
+	}
+
+	fun hasSurpassed(ticks: Int) = this.ticks > ticks
+
+	fun reset() {
+		ticks = 0
+	}
 }

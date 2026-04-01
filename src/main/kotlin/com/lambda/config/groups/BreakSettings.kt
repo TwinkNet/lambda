@@ -32,9 +32,9 @@ import net.minecraft.block.Block
 import java.awt.Color
 
 open class BreakSettings(
-	prefix: String = "",
 	c: Configurable,
 	vararg baseGroup: NamedEnum,
+	prefix: String = "",
 	override val visibility: () -> Boolean = { true },
 ) : SettingGroup(c), BreakConfig {
 	private enum class Group(override val displayName: String) : NamedEnum {
@@ -74,7 +74,7 @@ open class BreakSettings(
 
 	// Pending / Post
 	override val breakConfirmation by c.setting("${prefix}Break Confirmation", BreakConfirmationMode.BreakThenAwait, "The style of confirmation used when breaking", visibility = visibility).group(*baseGroup, Group.General).index()
-	override val breaksPerTick by c.setting("${prefix}Breaks Per Tick", 5, 1..30, 1, "Maximum instant block breaks per tick", visibility = visibility).group(*baseGroup, Group.General).index()
+	override val breaksPerTick by c.setting("${prefix}Breaks Per Tick", 30, 1..30, 1, "Maximum instant block breaks per tick", visibility = visibility).group(*baseGroup, Group.General).index()
 
 	// Block
 	override val ignoredBlocks by c.setting("${prefix}Ignored Blocks", emptySet<Block>(), description = "Blocks that wont be broken", visibility = visibility).group(*baseGroup, Group.General).index()
@@ -112,7 +112,7 @@ open class BreakSettings(
 
 	// Outline
 	override val outline by c.setting("${prefix}Outline", true, "Renders the lines of the box to display break progress") { visibility() && renders }.group(*baseGroup, Group.Cosmetic).index()
-	override val outlineConfig = WorldLineSettings("${prefix}Outline ", c, baseGroup = arrayOf(*baseGroup, Group.Cosmetic)) { visibility() && outline }.apply {
+	override val outlineConfig = WorldLineSettings(c, *baseGroup, Group.Cosmetic, prefix = "${prefix}Outline ") { visibility() && outline }.apply {
 		c.applyEdits {
 			hide(::startColor, ::endColor)
 		}
