@@ -47,13 +47,30 @@ object AutoSpiral : Module(
 	var setBaritoneGoal by setting("Set Baritone Goal", true, description = "Whether to set Baritone's goal to the current waypoint. Mostly so you can see where the next waypoint is.")
 
 	var center by setting("Center", BlockPos.ORIGIN, description = "Center position for the spiral")
+	var distanceMaxFromCentre by setting("Maximum Distance from Centre", 10000, 1000..50000, description = "The maximum distance that will be spiralled from the centre.")
+	var skipSteps by setting("Skip to", 0, 0..50000, description = "How far from the centre to start spiraling at.")
 
 	init {
 		onEnable {
 			if (iterator == null) {
-				iterator = BlockPosIterators.SpiralIterator2d(10000)
+				iterator = BlockPosIterators.SpiralIterator2d(distanceMaxFromCentre)
 				if (setCenterOnEnable) {
 					center = player.blockPos
+				}
+
+				while (skipSteps > 0) {
+					iterator?.next()?.let { pos ->
+						val scaled = pos.multiply(spiralSpacing)
+						val w = scaled.add(center)
+						val flag = w.x.coerceAtLeast(w.z) <= skipSteps
+						if (!flag) break
+					}
+				}
+				for (i in 0 until skipSteps) {
+					if (iterator!!.hasNext()) {
+						iterator?.next()
+					}
+
 				}
 			}
 		}
