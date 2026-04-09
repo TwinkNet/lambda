@@ -18,12 +18,12 @@
 package com.lambda.module.hud
 
 import com.lambda.gui.dsl.ImGuiBuilder
+import com.lambda.imgui.ImVec2
 import com.lambda.module.HudModule
 import com.lambda.module.tag.ModuleTag
 import com.lambda.util.Formatting.format
 import com.lambda.util.ServerTPS
 import com.lambda.util.ServerTPS.recentData
-import com.lambda.imgui.ImVec2
 
 object TPS : HudModule(
 	name = "TPS",
@@ -32,6 +32,7 @@ object TPS : HudModule(
 ) {
 	private val format by setting("Tick format", ServerTPS.TickFormat.Tps)
 	private val showGraph by setting("Show TPS Graph", false)
+	private val calculatePaperFoliaTps by setting("Calculate Paper/Folia TPS", false, "Enable this option if your TPS constantly reads above 20 TPS when the server is lagging.")
 	private val graphHeight by setting("Graph Height", 40f, 10f..200f, 1f)
 	private val graphWidth by setting("Graph Width", 200f, 10f..500f, 1f)
 	private val graphStride by setting("Graph Stride", 1, 1..20, 1)
